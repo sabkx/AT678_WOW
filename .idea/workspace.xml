@@ -11,7 +11,6 @@
   <component name="ChangeListManager">
     <list default="true" id="54505333-87d3-43e5-9409-da8f91aabd3b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/YQcode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/YQcode.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,6 +52,8 @@
       <updated>1671110814502</updated>
       <workItem from="1671110819101" duration="2352000" />
       <workItem from="1671358450788" duration="590000" />
+      <workItem from="1671609933023" duration="1408000" />
+      <workItem from="1671802293463" duration="1651000" />
     </task>
     <servers />
   </component>

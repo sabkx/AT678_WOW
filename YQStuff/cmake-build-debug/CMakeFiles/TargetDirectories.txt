@@ -1,0 +1,3 @@
+C:/Users/TANYIQUAN/CLionProjects/W@W_Project/cmake-build-debug/CMakeFiles/W_W_Project.dir
+C:/Users/TANYIQUAN/CLionProjects/W@W_Project/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/TANYIQUAN/CLionProjects/W@W_Project/cmake-build-debug/CMakeFiles/rebuild_cache.dir

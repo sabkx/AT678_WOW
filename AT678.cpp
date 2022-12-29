@@ -14,7 +14,7 @@
 #include<algorithm>
 #include<bits/stdc++.h>
 #define minsize 15
-#define MAXN 10000100
+#define MAXN 1000100
 #define MAXN2 10010
 #define pi 3.1415926535897932384626433832
 #define eps 1e-6
@@ -678,18 +678,31 @@ struct Image{
         h=x;
         w=y;
     }
-    Image(vector<string> input){
+    void build(vector<string> input){
         vec.clear();
         vector<int> temp;
         for(string str:input){
             for(char i:str){
                 if(i=='#'){
-                    temp.push_back(1);
+                    temp.emplace_back(1);
                 }else{
-                    temp.push_back(0);
+                    temp.emplace_back(0);
                 }
             }
             vec.push_back(temp);
+            temp.clear();
+        }
+    }
+    void print(){
+        for(int i=0;i<vec.size();i++){
+            for(int j=0;j<vec[i].size();j++){
+                if(vec[i][j]==1){
+                    printf("#");
+                }else{
+                    printf(".");
+                }
+            }
+            printf("\n");
         }
     }
 };
@@ -737,7 +750,8 @@ int miny[MAXN2];
 int cnt2=0;
 int dx[4]={-1,0,1,0};
 int dy[4]={0,1,0,-1};
-inline void dfs2(int x,int y,Image im){
+inline void dfs2(int x,int y,Image im){ 
+    printf("%d %d %d\n",x,y,cnt2);
     maxx[cnt2]=max(maxx[cnt2],x);
     minx[cnt2]=min(minx[cnt2],x);
     maxy[cnt2]=max(maxy[cnt2],y);
@@ -745,6 +759,7 @@ inline void dfs2(int x,int y,Image im){
     if(vis[x][y]){
         return;
     }
+    vis[x][y]=true;
     for(int i=0;i<4;i++){
         int newx=x+dx[i];
         int newy=y+dy[i];
@@ -756,16 +771,21 @@ inline void dfs2(int x,int y,Image im){
 }
 void dfs(Image im){
     cnt2=0;
+    printf("hi\n");
+    printf("%d %d\n",im.vec.size(),im.vec[0].size());
+    // printf("%d\n",im.vec[64][215]);
     for(int i=0;i<im.vec.size();i++){
-        for(int j=0;j<im.vec[0].size();j++){
-            if(!vis[i][j]&&im.vec[i][j]==1){
-                cnt2++;
-                dfs2(i,j,im);
-            }
+        for(int j=0;j<im.vec[i].size();j++){
+            printf("%d %d %d\n",i,j,im.vec[i][j]);
+            // if(im.vec[i][j]==1){
+            //     cnt2++;
+            //     // dfs2(i,j,im);
+            // }
         }
     }
 }
 vector<Image> split(Image input){
+    memset(vis,0,sizeof(vis));
     vector<Image> res;
     dfs(input);
     for(int i=1;i<=cnt2;i++){
@@ -831,12 +851,19 @@ inline double compare(Image x,Image y){
     return (cntsame/(y.h*y.w));
 }
 vector<char> expr;
-inline double match(int x,Image img){
-    double res=0;
-    for(int i=0;i<41;i++){
-        res=max(res,compare(font[x][i],img));
+// inline double match(int x,Image img){
+//     double res=0;
+//     for(int i=0;i<41;i++){
+//         res=max(res,compare(font[x][i],img));
+//     }
+//     return res;
+// }
+inline void read(char &ch){
+    ch=getchar();
+    while(ch!='#'&&ch!='.'){
+        ch=getchar();
     }
-    return res;
+    // putchar(ch);
 }
 void work(){
     // memset(head,0,sizeof(head));
@@ -845,18 +872,31 @@ void work(){
     // cnt=cnt2=0;
     vector<string> vec;
     string str;
+    char ch;
     for(int i=1;i<=b;i++){
-        cin>>str;
+        str="";
+        for(int j=1;j<=w;j++){
+            read(ch);
+            str+=ch;
+        }
         vec.push_back(str);
-        // cout<<str<<"\n";
+        // putchar('\n');
     }
-    Image im(vec);
+    // printf("%d\n",1);
+    Image im;
+    im.build(vec);
     vector<Image> splitted=split(im);
-
+    // printf("after split\n");
+    // printf("size: %d\n",splitted.size());
+    // splitted[0].print();
 }
 int main(){
-    freopen("AT678_input.txt","r",stdin);
+    // freopen("AT678_input.txt","r",stdin);
+    freopen("AT678_output.txt","w",stdout);
     scanf("%d%d%d",&t,&w,&b);
+    printf("%d \n%d %d\n",t,w,b);
+    // printf("b4 work function");
     work();
+    // printf("after work function\n");
     return 0;
 }

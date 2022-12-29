@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "c:/Users/TANYIQUAN/CLionProjects/W@W_Project/cmake-build-debug"
+			"value" : "c:/Users/TANYIQUAN/Documents/GitHub/AT678_WOW/YQStuff/cmake-build-debug"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -139,10 +139,10 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "No help, variable specified on the command line."
+					"value" : "CXX compiler"
 				}
 			],
-			"type" : "UNINITIALIZED",
+			"type" : "STRING",
 			"value" : "C:/Users/TANYIQUAN/MinGW/bin/g++.exe"
 		},
 		{
@@ -283,10 +283,10 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "No help, variable specified on the command line."
+					"value" : "C compiler"
 				}
 			],
-			"type" : "UNINITIALIZED",
+			"type" : "STRING",
 			"value" : "C:/Users/TANYIQUAN/MinGW/bin/gcc.exe"
 		},
 		{
@@ -623,7 +623,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "C:/Users/TANYIQUAN/CLionProjects/W@W_Project"
+			"value" : "C:/Users/TANYIQUAN/Documents/GitHub/AT678_WOW/YQStuff"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -1239,7 +1239,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/TANYIQUAN/CLionProjects/W@W_Project/cmake-build-debug"
+			"value" : "C:/Users/TANYIQUAN/Documents/GitHub/AT678_WOW/YQStuff/cmake-build-debug"
 		},
 		{
 			"name" : "W_W_Project_IS_TOP_LEVEL",
@@ -1263,7 +1263,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/TANYIQUAN/CLionProjects/W@W_Project"
+			"value" : "C:/Users/TANYIQUAN/Documents/GitHub/AT678_WOW/YQStuff"
 		}
 	],
 	"kind" : "cache",

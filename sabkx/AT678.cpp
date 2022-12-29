@@ -14,8 +14,8 @@
 #include<algorithm>
 #include<bits/stdc++.h>
 #define minsize 15
-#define MAXN 1000100
-#define MAXN2 10010
+#define MAXN 100010
+#define MAXN2 255
 #define pi 3.1415926535897932384626433832
 #define eps 1e-6
 using namespace std;
@@ -709,6 +709,7 @@ struct Image{
 inline void copy(Image &to_be_copied,Image to_copy){
     int x_size=to_copy.vec.size();
     int y_size=to_copy.vec[0].size();
+    to_be_copied.vec.clear();
     for(int i=0;i<x_size;i++){
         vector<int> temp;
         for(int j=0;j<y_size;j++){
@@ -717,7 +718,7 @@ inline void copy(Image &to_be_copied,Image to_copy){
         to_be_copied.vec.push_back(temp);
     }
 }
-inline Image medium_reduce_noise(Image &input){
+inline void medium_reduce_noise(Image &input){
     //reduce noise
     Image temp=Image();
     copy(temp,input);
@@ -739,19 +740,33 @@ inline Image medium_reduce_noise(Image &input){
             temp.vec[i][j]=arr[4]; 
         }
     }
+    for(int i=1;i<x-1;i++){
+        temp.vec[i][0]=(temp.vec[i][0]+temp.vec[i+1][0]+temp.vec[i-1][0]+temp.vec[i][1])/4;
+        temp.vec[i][y-1]=(temp.vec[i][y-1]+temp.vec[i+1][y-1]+temp.vec[i-1][y-1]+temp.vec[i][y-2])/4;
+    }
+    for(int j=1;j<y-1;j++){
+        temp.vec[0][j]=(temp.vec[0][j]+temp.vec[0][j+1]+temp.vec[0][j-1]+temp.vec[1][j])/4;
+        temp.vec[x-1][j]=(temp.vec[x-1][j]+temp.vec[x-1][j+1]+temp.vec[x-1][j-1]+temp.vec[x-2][j])/4;
+    }
     copy(input,temp);
-    return temp;
+    // return temp;
 }
-bool vis[75][MAXN2];
-int maxx[MAXN2];
-int minx[MAXN2];
-int maxy[MAXN2];
-int miny[MAXN2];
+bool vis[MAXN2][MAXN2];
+int maxx[MAXN2<<5];
+int minx[MAXN2<<5];
+int maxy[MAXN2<<5];
+int miny[MAXN2<<5];
 int cnt2=0;
 int dx[4]={-1,0,1,0};
 int dy[4]={0,1,0,-1};
-inline void dfs2(int x,int y,Image im){ 
-    printf("%d %d %d\n",x,y,cnt2);
+inline void dfs2(int x,int y,Image im){
+    if(x>=im.vec.size()||x<0||y>im.vec[0].size()||y<0){
+        return;
+    }
+    if(im.vec[x][y]==0){
+        return;
+    }
+    // printf("%d %d %d\n",x,y,cnt2);
     maxx[cnt2]=max(maxx[cnt2],x);
     minx[cnt2]=min(minx[cnt2],x);
     maxy[cnt2]=max(maxy[cnt2],y);
@@ -763,24 +778,25 @@ inline void dfs2(int x,int y,Image im){
     for(int i=0;i<4;i++){
         int newx=x+dx[i];
         int newy=y+dy[i];
+        if(newx>=im.vec.size()||newx<0||newy>=im.vec[0].size()||newy<0){
+            continue;
+        }
         if(!vis[newx][newy]&&im.vec[newx][newy]==1){
-            vis[newx][newy]=true;
+            // vis[newx][newy]=true;
             dfs2(newx,newy,im);
         }
     }
 }
 void dfs(Image im){
     cnt2=0;
-    printf("hi\n");
-    printf("%d %d\n",im.vec.size(),im.vec[0].size());
-    // printf("%d\n",im.vec[64][215]);
     for(int i=0;i<im.vec.size();i++){
         for(int j=0;j<im.vec[i].size();j++){
-            printf("%d %d %d\n",i,j,im.vec[i][j]);
-            // if(im.vec[i][j]==1){
-            //     cnt2++;
-            //     // dfs2(i,j,im);
-            // }
+            // printf("%d %d %d\n",i,j,vis[i][j]);
+            if(!vis[i][j]&&im.vec[i][j]==1){
+                cnt2++;
+                // printf("%d %d\n",i,j);
+                dfs2(i,j,im);
+            }
         }
     }
 }
@@ -788,8 +804,13 @@ vector<Image> split(Image input){
     memset(vis,0,sizeof(vis));
     vector<Image> res;
     dfs(input);
+    printf("cnt2: %d\n",cnt2);
     for(int i=1;i<=cnt2;i++){
-        res.push_back(Image(maxx[i]-minx[i],maxy[i]-miny[i]));
+        if(maxx[i]-minx[i]<=minsize&&maxy[i]-miny[i]<=minsize){
+            continue;
+        }
+        res.push_back(Image(maxx[i]-minx[i]+1,maxy[i]-miny[i]+1));
+        // printf("%d %d %d %d\n",maxx[i],minx[i],maxy[i],miny[i]);
     }
     for(int i=0;i<res.size();i++){
         for(int x=minx[i];x<=maxx[i];x++){
@@ -866,10 +887,6 @@ inline void read(char &ch){
     // putchar(ch);
 }
 void work(){
-    // memset(head,0,sizeof(head));
-    // memset(e,0,sizeof(e));
-    // memset(color,0,sizeof(color));
-    // cnt=cnt2=0;
     vector<string> vec;
     string str;
     char ch;
@@ -885,9 +902,10 @@ void work(){
     // printf("%d\n",1);
     Image im;
     im.build(vec);
-    vector<Image> splitted=split(im);
-    // printf("after split\n");
-    // printf("size: %d\n",splitted.size());
+    medium_reduce_noise(im);
+    im.print();
+    // vector<Image> splitted=split(im);
+    // printf("%d\n",splitted.size());
     // splitted[0].print();
 }
 int main(){

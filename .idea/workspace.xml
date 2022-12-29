@@ -18,29 +18,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="54505333-87d3-43e5-9409-da8f91aabd3b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/AT678_WOW.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AT678_WOW.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/YQStuff/cmake-build-debug/.cmake/api/v1/reply/cache-v2-08f2a5320451af52a99c.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/YQStuff/cmake-build-debug/.cmake/api/v1/reply/cmakeFiles-v1-a7c71c78990153516923.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/YQStuff/cmake-build-debug/.cmake/api/v1/reply/codemodel-v2-63b3d29c1112ade3bf6c.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/YQStuff/cmake-build-debug/.cmake/api/v1/reply/index-2022-12-24T02-26-31-0908.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/YQStuff/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/YQStuff/cmake-build-debug/.ninja_deps" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/YQStuff/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/YQStuff/cmake-build-debug/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/YQStuff/cmake-build-debug/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/YQStuff/cmake-build-debug/CMakeCache.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/YQStuff/cmake-build-debug/CMakeFiles/3.23.2/CMakeDetermineCompilerABI_C.bin" beforeDir="false" afterPath="$PROJECT_DIR$/YQStuff/cmake-build-debug/CMakeFiles/3.23.2/CMakeDetermineCompilerABI_C.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/YQStuff/cmake-build-debug/CMakeFiles/3.23.2/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" afterPath="$PROJECT_DIR$/YQStuff/cmake-build-debug/CMakeFiles/3.23.2/CMakeDetermineCompilerABI_CXX.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/YQStuff/cmake-build-debug/CMakeFiles/3.23.2/CompilerIdC/a.exe" beforeDir="false" afterPath="$PROJECT_DIR$/YQStuff/cmake-build-debug/CMakeFiles/3.23.2/CompilerIdC/a.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/YQStuff/cmake-build-debug/CMakeFiles/3.23.2/CompilerIdCXX/a.exe" beforeDir="false" afterPath="$PROJECT_DIR$/YQStuff/cmake-build-debug/CMakeFiles/3.23.2/CompilerIdCXX/a.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/YQStuff/cmake-build-debug/CMakeFiles/CMakeOutput.log" beforeDir="false" afterPath="$PROJECT_DIR$/YQStuff/cmake-build-debug/CMakeFiles/CMakeOutput.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/YQStuff/cmake-build-debug/CMakeFiles/TargetDirectories.txt" beforeDir="false" afterPath="$PROJECT_DIR$/YQStuff/cmake-build-debug/CMakeFiles/TargetDirectories.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/YQStuff/cmake-build-debug/CMakeFiles/W_W_Project.dir/CharacterRecognition.cpp.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/YQStuff/cmake-build-debug/CMakeFiles/W_W_Project.dir/ImageRecognition.cpp.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/YQStuff/cmake-build-debug/CMakeFiles/W_W_Project.dir/main.cpp.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/YQStuff/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/YQStuff/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/YQStuff/cmake-build-debug/CMakeFiles/rules.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/YQStuff/cmake-build-debug/CMakeFiles/rules.ninja" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/YQStuff/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/YQStuff/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/YQStuff/cmake-build-debug/build.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/YQStuff/cmake-build-debug/build.ninja" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/YQStuff/cmake-build-debug/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/YQStuff/cmake-build-debug/cmake_install.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/YQStuff/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/YQStuff/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,7 +77,7 @@
       <workItem from="1671609933023" duration="1408000" />
       <workItem from="1671802293463" duration="1899000" />
       <workItem from="1672230863525" duration="1169000" />
-      <workItem from="1672306197705" duration="2663000" />
+      <workItem from="1672306197705" duration="3227000" />
     </task>
     <servers />
   </component>

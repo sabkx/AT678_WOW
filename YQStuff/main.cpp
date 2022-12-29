@@ -650,6 +650,7 @@ const int MAX_HEIGHT = 65, MAX_WIDTH = 10000, CHAR_MIN_SIZE = 100,
         INF = 0xffffffffffffff;
 const double pi = acos(-1);
 int vis[MAX_HEIGHT][MAX_WIDTH];
+char charRepresentation[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '*', '/', '(', ')'};
 
 struct Image{
     int w, h;
@@ -839,11 +840,24 @@ void generateFontImage(){
             randomisedFontImage[charCnt].push_back(cutImg(tmp, .1, .1));
             randomisedFontImage[charCnt].push_back(tmp);
         }
-        for (int i = 0; i < randomisedFontImage[]){
-
+        for (int i = 0; i < randomisedFontImage[charCnt].size(); i++){
+            rmvNoise(randomisedFontImage[charCnt][i]);
         }
     }
+}
 
+char recogniseChar(Image charImage){
+    int charNo = 0;
+    double max = 0;
+    for (int charCnt = 0; charCnt < 16; charCnt++){
+        for (int imageCnt = 0; imageCnt < randomisedFontImage[charCnt].size(); imageCnt++){
+            if (matchImg(randomisedFontImage[charCnt][imageCnt], charImage) > max){
+                max = matchImg(randomisedFontImage[charCnt][imageCnt], charImage);
+                charNo = charCnt;
+            }
+        }
+    }
+    return charRepresentation[charNo];
 }
 
 void initBound(int &xMin, int &xMax, int &yMin, int &yMax, Image image){
@@ -898,14 +912,14 @@ Image connectedPixels(int x, int y, Image &image){
     if ((xMax - xMin + 1) * (yMax - yMin + 1) < 100){
         return Image(0, 0);
     }
-    Image charImage(CHAR_IMAGE_HEIGHT, CHAR_IMAGE_WIDTH);
-    int startX = (CHAR_IMAGE_HEIGHT - (xMax - xMin + 1)) / 2,
-            startY = (CHAR_IMAGE_WIDTH - (yMax - yMin + 1)) / 2;
+    Image charImage(xMax - xMin + 1, yMax - yMin + 1);
+//    int startX = (CHAR_IMAGE_HEIGHT - (xMax - xMin + 1)) / 2,
+//        startY = (CHAR_IMAGE_WIDTH - (yMax - yMin + 1)) / 2;
     for (int row = 0; row < (xMax - xMin + 1); row++){
         for (int col = 0; col < (yMax - yMin + 1); col++){
             //printf("%d %d ", charImage.pixels[row][col], vis[row + xMin][col + yMin]);
-//            charImage.pixels[row][col] = vis[row + xMin][col + yMin];
-            charImage.pixels[startX + row][startY + col] = vis[row + xMin][col + yMin];
+            charImage.pixels[row][col] = vis[row + xMin][col + yMin];
+//            charImage.pixels[startX + row][startY + col] = vis[row + xMin][col + yMin];
             vis[row + xMin][col + yMin] = 0;
         }
         //printf("\n");
@@ -938,13 +952,12 @@ vector<Image> splitExpr(Image &image){
 }
 //*
 int main() {
-    printf("%f\n", sizeof(font)/sizeof(char));
-    Image i = readImg();
-    rmvNoise(i);
-    printImg(i);
+    Image image = readImg();
+    rmvNoise(image);
+    printImg(image);
     //printf("\n\n\n");
 
-    vector<Image> charList = splitExpr(i);
+    vector<Image> charList = splitExpr(image);
 
     for (int i = 0; i < charList.size(); i++) {
         printImg(charList[i]);

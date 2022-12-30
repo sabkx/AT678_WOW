@@ -20,11 +20,12 @@
 #include<algorithm>
 #define minsize 15
 #define MAXN 100010
-#define MAXN2 505
+#define MAXN2 305
 #define pi 3.1415926535897932384626433832
 #define inf 0x3f3f3f3f
 #define eps 1e-6
 using namespace std;
+int start=clock();
 char font[][66][39]=
 {
     {"",
@@ -668,9 +669,10 @@ int t,w,b;
 struct Image{
     vector<vector<int> > vec;
     int h,w;
+    int x;
     Image(){
         vec.clear();
-        h=w;
+        h=w=0;
     }
     Image(int x,int y){
         for(int i=0;i<x;i++){
@@ -698,6 +700,8 @@ struct Image{
             vec.push_back(temp);
             temp.clear();
         }
+        h=vec.size();
+        w=vec[0].size();
     }
     void print(){
         for(int i=0;i<vec.size();i++){
@@ -720,9 +724,9 @@ inline void copy(Image &to_be_copied,Image to_copy){
     for(int i=0;i<x_size;i++){
         vector<int> temp;
         for(int j=0;j<y_size;j++){
-            temp.push_back(to_copy.vec[i][j]);
+            temp.emplace_back(to_copy.vec[i][j]);
         }
-        to_be_copied.vec.push_back(temp);
+        to_be_copied.vec.emplace_back(temp);
     }
 }
 inline void medium_reduce_noise(Image &input){
@@ -760,7 +764,7 @@ inline void medium_reduce_noise(Image &input){
     copy(input,temp);
     // return temp;
 }
-bool vis[MAXN2][MAXN2];
+bool vis[MAXN2][9005];
 int maxx[MAXN2];
 int minx[MAXN2];
 int maxy[MAXN2];
@@ -784,7 +788,7 @@ inline void dfs2(int x,int y,Image im){
         return;
     }
     vis[x][y]=true;
-    for(register int i=0;i<4;i++){
+    for(int i=0;i<4;i++){
         int newx=x+dx[i];
         int newy=y+dy[i];
         if(newx>=im.vec.size()||newx<0||newy>=im.vec[0].size()||newy<0){
@@ -814,18 +818,19 @@ inline vector<Image> split(Image input){
     cnt2=0;
     memset(vis,0,sizeof(vis));
     vector<Image> res;
-    for(register int i=0;i<MAXN2;i++){
+    for(int i=0;i<MAXN2;i++){
         minx[i]=miny[i]=inf;
         maxx[i]=maxy[i]=0;
     }
     dfs(input);
     // printf("cnt2: %d\n",cnt2);
-    for(register int i=1;i<=cnt2;i++){
+    for(int i=1;i<=cnt2;i++){
         if(maxx[i]-minx[i]<=minsize&&maxy[i]-miny[i]<=minsize){
             // printf("%d\n",i);
             continue;
         }
         Image temp2(maxx[i]-minx[i]+1,maxy[i]-miny[i]+1);
+        temp2.x=miny[i];
         // res.push_back(Image(maxx[i]-minx[i]+1,maxy[i]-miny[i]+1));
         for(int x=minx[i];x<=maxx[i];x++){
             for(int y=miny[i];y<=maxy[i];y++){
@@ -833,7 +838,7 @@ inline vector<Image> split(Image input){
                 temp2.vec[x-minx[i]][y-miny[i]]=input.vec[x][y];
             }
         }
-        res.push_back(temp2);
+        res.emplace_back(temp2);
         // printf("%d %d %d %d\n",maxx[i],minx[i],maxy[i],miny[i]);
     }
     // res.push_back(input);
@@ -842,18 +847,19 @@ inline vector<Image> split(Image input){
 }
 inline Image stretching(Image input,int newx,int newy){
     Image res(newx,newy);
-    for(register int i=0;i<newx;i++){
-        for(register int j=0;j<newy;j++){
+    for(int i=0;i<newx;i++){
+        for(int j=0;j<newy;j++){
             res.vec[i][j]=input.vec[input.h*i/newx][input.w*j/newy];
         }
     }
-    vector<Image> aa;
-    aa=split(res);
-    return aa[0];
+    return res;
+    // vector<Image> aa;
+    // aa=split(res);
+    // return aa[0];
     // return split(res)[0];
 }
 inline Image distort(Image input,double sx,double sy){
-    Image res(input.h*3,input.w*3);
+    Image res(input.vec.size()*3,input.vec[0].size()*3);
     for(int i=0;i<input.h;i++){
         for(int j=0;j<input.w;j++){
             // if(input.vec[i][j]){
@@ -862,10 +868,10 @@ inline Image distort(Image input,double sx,double sy){
             res.vec[(int)(i+sy*j)+input.h][(int)(j+sx*i)+input.w]=input.vec[i][j];
         }
     }
+    // return res;
     vector<Image> aa;
     aa=split(res);
     return aa[0];
-    // return aa[0];
     // return split(res)[0];
 }
 inline Image rotate(Image input,double angle){
@@ -874,9 +880,9 @@ inline Image rotate(Image input,double angle){
     }
     int newL=max(input.vec.size(),input.vec[0].size());
     angle=angle*pi/180;
-    Image res(newL<<2,newL<<2);
-    for(register int i=1;i<=input.h;i++){
-        for(register int j=1;j<=input.w;j++){
+    Image res(newL*2,newL*2);
+    for(int i=1;i<=input.h;i++){
+        for(int j=1;j<=input.w;j++){
             // if(i-1>=input.vec.size()||j-1>=input.vec[0].size()){
             //     printf("%d %d\n",i,j);
             //     printf("range: %d %d\n",input.vec.size(),input.vec[0].size());
@@ -886,7 +892,7 @@ inline Image rotate(Image input,double angle){
                 double p=atan((double)j/i);
                 double delta=p-angle;
                 double len=sqrt(i*i+j*j);
-                res.vec[(int)(len*cos(delta)+0.4)+(newL<<1)][(int)(len*sin(delta)+0.4)+(newL<<1)]=1;
+                res.vec[(int)(len*cos(delta)+0.4)+(newL)][(int)(len*sin(delta)+0.4)+(newL)]=1;
             }
         }
     }
@@ -900,14 +906,16 @@ inline double compare(Image x,Image y){
     if(x.h<0.65*y.h||x.h*0.65>y.h||x.w<0.65*y.w||x.w*0.65>y.w){
         return 0;
     }
-    x=stretching(x,y.h,y.w);
+    Image newx=stretching(x,y.vec.size(),y.vec[0].size());
     int cntsame=0;
-    for(int i=0;i<y.h;i++){
-        for(int j=0;j<y.w;j++){
-            cntsame+=(x.vec[i][j]==y.vec[i][j]);
+    for(int i=0;i<y.vec.size();i++){
+        for(int j=0;j<y.vec[0].size();j++){
+            // printf("%d %d\n",i,j);
+            // cntsame+=(newx.vec[i][j]=='#');
+            cntsame+=(newx.vec[i][j]==y.vec[i][j]);
         }
     }
-    return (cntsame/(y.h*y.w));
+    return ((double)cntsame/(y.h*y.w));
 }
 Image realfont[16][41];
 inline void prework(){
@@ -920,7 +928,7 @@ inline void prework(){
 		Rmin=-15,Rmax=15,Smin=-0.1,Smax=0.1;
 	}
 	uniform_real_distribution<> M(Mmin, Mmax), R(Rmin, Rmax), S(Smin, Smax);
-	default_random_engine gen(time(NULL)*clock());
+	default_random_engine gen(time(NULL));
     for(int i=0;i<16;i++){
         Image temp(66,39);
         for(int x=0;x<66;x++){
@@ -928,25 +936,51 @@ inline void prework(){
                 temp.vec[x][y]=(font[i][x][y]=='#');
             }
         }
-        realfont[i][0]=temp;
-        // temp.print();
-        for(register int j=1;j<=40;j++){
+        vector<Image> vec2;
+        vec2=split(temp);
+        realfont[i][0]=vec2[0];
+        // realfont[i][0]=temp;
+        for(int j=1;j<=7;j+=3){
             Image temp2;
             temp2=stretching(temp,66*M(gen),39*M(gen));
-            temp2=rotate(temp2,R(gen));
-            temp2=distort(temp2,S(gen),S(gen));
             realfont[i][j]=temp2;
+            temp2=rotate(temp2,R(gen));
+            realfont[i][j+1]=temp2;
+            temp2=distort(temp2,S(gen),S(gen));
+            realfont[i][j+2]=temp2;
             // temp2.print();
         }
     }
 }
-vector<char> expr;
+struct which{
+    int x,id;
+};
+which in[MAXN2];
+inline bool cmp(which a,which b){
+    return a.x<b.x;
+}
+string expr="";
+const string table="0123456789)/-(+*";
 inline double match(int x,Image img){
     double res=0;
-    for(int i=0;i<41;i++){
+    for(int i=0;i<=9;i++){
         res=max(res,compare(realfont[x][i],img));
     }
+    // printf("%d %lf\n",x,res);
     return res;
+}
+inline void process(Image im){
+    double maxx=-1.0;
+    double temp;
+    int id=0;
+    for(int i=0;i<=15;i++){
+        temp=match(i,im);
+        if(temp>maxx){
+            id=i;
+            maxx=temp;
+        }
+    }
+    expr+=table[id];
 }
 inline void read(char &ch){
     scanf("%c",&ch);
@@ -956,37 +990,140 @@ void work(){
     string str;
     char ch;
     prework();
-    // for(int i=1;i<=b;i++){
-    //     str="";
-    //     for(int j=1;j<=w;j++){
-    //         read(ch);
-    //         str+=ch;
-    //         // printf("%d %c\n",j,ch);
-    //     }
-    //     scanf("\n");
-    //     vec.push_back(str);
-    //     // putchar('\n');
-    // }
-    // // printf("%d\n",1);
-    // Image im;
-    // im.build(vec);
-    // // im.print();
-    // medium_reduce_noise(im);
-    // medium_reduce_noise(im);
+    // realfont[8][0].print();
+    for(int i=1;i<=b;i++){
+        str="";
+        for(int j=1;j<=w;j++){
+            read(ch);
+            str+=ch;
+            // printf("%d %c\n",j,ch);
+        }
+        scanf("\n");
+        vec.push_back(str);
+        // putchar('\n');
+    }
+    // printf("%d\n",1);
+    Image im;
+    im.build(vec);
+    // im.print();
+    medium_reduce_noise(im);
+    medium_reduce_noise(im);
     // medium_reduce_noise(im);
     // medium_reduce_noise(im);
     // im.print();
-    // vector<Image> splitted=split(im);
+    vector<Image> splitted=split(im);
+    int len=splitted.size();
+    for(int i=1;i<=len;i++){
+        in[i].x=splitted[i-1].x;
+        in[i].id=i-1;
+    }
+    // printf("1\n");
+    sort(in+1,in+len+1,cmp);
+    // process(splitted[0]);
+    for(int i=1;i<=len;i++){
+        // printf("%d\n",in[i].id);
+        // printf("y coor: %d\n",splitted[in[i].id].x);
+        // splitted[in[i].id].print();
+        process(splitted[in[i].id]);
+    }
+    // printf("2\n");
+    // for(char i:expr){
+    //     putchar(i);
+    //     putchar(' ');
+    // }
+    // putchar('\n');
     // printf("%d\n",splitted.size());
     // splitted[0].print();
+}
+stack<int> data, op;
+stack<int> num,data2;
+int precedence(char c){
+    if(c=='+'||c=='-'){
+        return 1;
+    }
+    if(c=='*'||c=='/'){
+        return 2;
+    }
+    return 0;
+}
+int applyOp(int x,int y,char c){
+    if(c=='+'){
+        return x+y;
+    }
+    if(c=='-'){
+        return x-y;
+    }
+    if(c=='*'){
+        return x*y;
+    }
+    if(c=='/'){
+        return x/y;
+    }
+    return -1;
+}
+int evaluate(string tokens){
+    int i;
+    stack<int> values;
+    stack<char> ops;
+    for(i = 0; i < tokens.length(); i++){
+        if(tokens[i] == '('){
+            ops.push(tokens[i]);
+        }
+        else if(isdigit(tokens[i])){
+            int val = 0;
+            while(i<tokens.length()&&isdigit(tokens[i])){
+                val = (val*10) + (tokens[i]-'0');
+                i++;
+            }
+            values.push(val);
+            i--;
+        }else if(tokens[i] == ')'){
+            while(!ops.empty() && ops.top() != '('){
+                int val2 = values.top();
+                values.pop();
+                int val1 = values.top();
+                values.pop();
+                char op = ops.top();
+                ops.pop();
+                values.push(applyOp(val1, val2, op));
+            }
+            if(!ops.empty()){
+                ops.pop();
+            }
+        }else{
+            while(!ops.empty() && precedence(ops.top())>= precedence(tokens[i])){
+                int val2 = values.top();
+                values.pop();
+                int val1 = values.top();
+                values.pop();
+                char op = ops.top();
+                ops.pop();
+                values.push(applyOp(val1, val2, op));
+            }
+            ops.push(tokens[i]);
+        }
+    }
+    while(!ops.empty()){
+        int val2 = values.top();
+        values.pop();
+        int val1 = values.top();
+        values.pop();
+        char op = ops.top();
+        ops.pop();
+        values.push(applyOp(val1, val2, op));
+    }
+    return values.top();
 }
 int main(){
     freopen("AT678_input.txt","r",stdin);
     freopen("AT678_output.txt","w",stdout);
     scanf("%d%d%d\n",&t,&w,&b);
-    printf("%d \n%d %d\n",t,w,b);
+    // printf("%d \n%d %d\n",t,w,b);
     // printf("b4 work function");
     work();
+    printf("%d\n",evaluate(expr));
+    // printf("%d\n",clock()-start);
+    // printf("%d\n",CLOCKS_PER_SEC);
     // printf("after work function\n");
     return 0;
 }

@@ -1,6 +1,10 @@
+#pragma GCC optimize("Ofast")
+#pragma GCC optimize("unroll-loops")
+#pragma GCC target("avx,avx2,sse,sse2,sse3,sse4")
 #include<bits/stdc++.h>
 #include<algorithm>
 #include <unistd.h>
+
 char font[][66][39]=
 {
     {"",
@@ -640,12 +644,14 @@ char font[][66][39]=
     ".....#####......######",
     "......###.........##"}
 };
+
 using namespace std;
 const int MAX_HEIGHT = 65, MAX_WIDTH = 10000, CHAR_MIN_SIZE = 100,
-INF = 0x3f3f3f3f;
+INF = 0x3f3f3f3f, EXPR_LEN = 300;
 const double pi = acos(-1);
 int vis[MAX_HEIGHT][MAX_WIDTH];
 char charRepresentation[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ')', '/', '-', '(', '+', '*'};
+
 struct Image{
     int w, h;
     vector<vector<int>> pixels;
@@ -664,8 +670,8 @@ struct Image{
         h = image.h;
         w = image.w;
         pixels = vector<vector<int>>(h, vector<int>(w));
-        for (register int row = 0; row < h; row++){
-            for (register int col = 0; col < w; col++){
+        for (int row = 0; row < h; row++){
+            for (int col = 0; col < w; col++){
                 pixels[row][col] = image.pixels[row][col];
             }
         }
@@ -679,11 +685,13 @@ struct Image{
         }
     }
 };
+
 void initBound(int &xMin, int &xMax, int &yMin, int &yMax, Image image);
 Image connectedPixels(int x, int y, Image &image);
 Image fontImage[16];
-vector<Image> randomisedFontImage[16];
-inline Image readImg(){
+vector<vector<Image>> randomisedFontImage = vector<vector<Image>>(16);
+
+Image readImg(){
     int t, w, h;
     scanf("%d", &t);
     scanf("%d %d", &w, &h);
@@ -699,20 +707,23 @@ inline Image readImg(){
 
     return image;
 }
+
 void printImg(Image image){
     for (int row = 0; row < image.h; row++){
         for (int col = 0; col < image.w; col++){
             printf("%c", image.pixels[row][col] ? '#' : '.');
         }
-        putchar('\n');
+        printf("\n");
     }
 }
+
 inline void rmvNoise(Image &image){
     Image tmpImage(image);
     int dx[] = {-1, 0, 1, -1, 0, 1, -1, 0, 1},
         dy[] = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
     for (int row = 0; row < image.h; row++){
         for (int col = 0; col < image.w; col++){
+
             int cnt = 0, totalCnt = 0;
             for (int i = 0; i < 9; i++){
                 int nx = row + dx[i], ny = col + dy[i];
@@ -726,7 +737,8 @@ inline void rmvNoise(Image &image){
         }
     }
 }
-inline Image stretchImg(Image image, int tarX, int tarY){
+
+Image stretchImg(Image image, int tarX, int tarY){
     Image tmp(tarX, tarY);
     for (int row = 0; row < tarX; row++){
         for (int col = 0; col < tarY; col++){
@@ -735,16 +747,19 @@ inline Image stretchImg(Image image, int tarX, int tarY){
     }
     return tmp;
 }
-inline Image rotateImg(Image image, double ang){
+
+Image rotateImg(Image image, double ang){
     vector<pair<int, int>> pointList;
     int xMin = INF, xMax = -INF, yMin = INF, yMax = -INF;
     ang = ang * pi / 180;
     double sinAng = sin(ang), cosAng = cos(ang), xCen = image.h/2., yCen = image.w/2.;
+
     for (int row = 0; row < image.h; row++) {
         for (int col = 0; col < image.w; col++){
             if (image.pixels[row][col]) {
                 double nx = (row - xCen) * cosAng + (col - yCen) * sinAng;
                 double ny = (col - yCen) * cosAng - (row - xCen) * sinAng;
+
                 int fx = round(xCen + nx), fy = round(yCen + ny);
                 pointList.emplace_back(fx, fy);
                 xMin = min(xMin, fx), xMax = max(xMax, fx);
@@ -752,20 +767,24 @@ inline Image rotateImg(Image image, double ang){
             }
         }
     }
+
     Image tmp(xMax-xMin+1, yMax-yMin+1);
     for (pair<int, int> point: pointList){
         tmp.pixels[point.first - xMin][point.second - yMin] = 1;
     }
     return tmp;
 }
-inline Image cutImg(Image image, double cx, double cy){
+
+Image cutImg(Image image, double cx, double cy){
     vector<pair<int, int>> pointList;
     int xMin = INF, xMax = -INF, yMin = INF, yMax = -INF;
+
     for (int row = 0; row < image.h; row++) {
         for (int col = 0; col < image.w; col++) {
             if (image.pixels[row][col]) {
                 double nx = row + col * cy;
                 double ny = col + row * cx;
+
                 int fx = round(nx), fy = round(ny);
                 pointList.emplace_back(fx, fy);
                 xMin = min(xMin, fx), xMax = max(xMax, fx);
@@ -773,28 +792,32 @@ inline Image cutImg(Image image, double cx, double cy){
             }
         }
     }
+
     Image tmp(xMax-xMin+1, yMax-yMin+1);
     for (pair<int, int> point: pointList){
         tmp.pixels[point.first - xMin][point.second - yMin] = 1;
     }
     return tmp;
 }
-inline double matchImg(Image image1, Image image2){
-    if (min(abs((double)image1.h/image1.w - image2.h/image2.w), abs((double)image1.w/image1.h - image2.w/image2.h)) > 0.25){
+
+double matchImg(Image image1, Image image2){
+    if (min(abs((double)image1.h/image1.w - image2.h/image2.w), abs((double)image1.w/image1.h - image2.w/image2.h)) > 0.4){
         return 0;
     }
     int reCnt = 0, xMin = min(image1.h, image2.h), yMin = min(image1.w, image2.w);
+//    int reCnt = 0, xMin = max(image1.h, image2.h), yMin = max(image1.w, image2.w);
     image1 = stretchImg(image1, xMin, yMin);
     image2 = stretchImg(image2, xMin, yMin);
-    for (int row = 0; row < xMin; row++){
-        for (int col = 0; col < yMin; col++){
+    for (register int row = 0; row < xMin; row++){
+        for (register int col = 0; col < yMin; col++){
             reCnt += image1.pixels[row][col]==image2.pixels[row][col];
         }
     }
     return (double)reCnt/(xMin*yMin);
 }
-inline void readFontImg(){
-    for (register int charCnt = 0; charCnt < 16; charCnt++){
+
+void readFontImg(){
+    for (int charCnt = 0; charCnt < 16; charCnt++){
         Image image(66, 39);
         for (int row = 0; row < 66; row++){
             for (int col = 0; col < 39; col++){
@@ -814,26 +837,37 @@ inline void readFontImg(){
                 break;
             }
         }
+//        printImg(image);
+//        printf("\n\n");
         fontImage[charCnt] = image;
     }
 }
-inline void generateFontImg(){
+
+void generateFontImg(){
     for (int charCnt = 0; charCnt < 16; charCnt++){
+        vector<Image> c;
         for (int r = -15; r < 16; r+=3){
             Image tmp = rotateImg(fontImage[charCnt], r);
-            double num = 0.707;
-            randomisedFontImage[charCnt].push_back(cutImg(tmp, -num, -num));
-            randomisedFontImage[charCnt].push_back(cutImg(tmp, -num, num));
-            randomisedFontImage[charCnt].push_back(cutImg(tmp, num, -num));
-            randomisedFontImage[charCnt].push_back(cutImg(tmp, num, num));
-            randomisedFontImage[charCnt].push_back(tmp);
+
+//            printImg(tmp);
+//            printf("\n\n");
+            double num = 0.1;
+            c.push_back(cutImg(tmp, -num, -num));
+            c.push_back(cutImg(tmp, -num, num));
+            c.push_back(cutImg(tmp, num, -num));
+            c.push_back(cutImg(tmp, num, num));
+            c.push_back(tmp);
         }
-        for (int i = 0; i < randomisedFontImage[charCnt].size(); i++){
-            rmvNoise(randomisedFontImage[charCnt][i]);
+        for (int i = 0; i < c.size(); i++){
+            rmvNoise(c[i]);
+//            printImg(randomisedFontImage[charCnt][i]);
+//            printf("\n\n");
         }
+        randomisedFontImage[charCnt] = c;
     }
 }
-inline char recogniseChar(Image charImage){
+
+char recogniseChar(Image charImage){
     int charNo = 0;
     double max = 0;
     for (int charCnt = 0; charCnt < 16; charCnt++){
@@ -846,13 +880,15 @@ inline char recogniseChar(Image charImage){
     }
     return charRepresentation[charNo];
 }
-inline void initBound(int &xMin, int &xMax, int &yMin, int &yMax, Image image){
+
+void initBound(int &xMin, int &xMax, int &yMin, int &yMax, Image image){
     xMin = image.h;
     xMax = 0;
     yMin = image.w;
     yMax = 0;
 }
-inline Image connectedPixels(int x, int y, Image &image){
+
+Image connectedPixels(int x, int y, Image &image){
     queue<pair<int, int>> unchecked;
     int dx[] = {-1, 0, 0, 1},
         dy[] = {0, -1, 1, 0};
@@ -876,10 +912,12 @@ inline Image connectedPixels(int x, int y, Image &image){
             }
         }
     }
+
     Image charImage(xMax - xMin + 1, yMax - yMin + 1);
     if ((xMax - xMin + 1) * (yMax - yMin + 1) < 100){
         return Image(0, 0);
     }
+
     for (int row = 0; row < (xMax - xMin + 1); row++){
         for (int col = 0; col < (yMax - yMin + 1); col++){
             charImage.pixels[row][col] = vis[row + xMin][col + yMin];
@@ -888,7 +926,8 @@ inline Image connectedPixels(int x, int y, Image &image){
     }
     return charImage;
 }
-inline vector<Image> splitExpr(Image &image){
+
+vector<Image> splitExpr(Image &image){
     vector<Image> charList;
     for (int col = 0; col < image.w; col++){
         for (int row = 0; row < image.h; row++){
@@ -903,6 +942,7 @@ inline vector<Image> splitExpr(Image &image){
 
     return charList;
 }
+
 struct node{
     int type;
     union {
@@ -918,15 +958,18 @@ struct node{
         data.op = op;
     }
 };
+
 vector<node> expr;
 vector<char> opList;
-inline int priority(char c) {
+
+int priority(char c) {
     if (c == '^') return 3;
     if (c == '*' || c == '/') return 2;
     if (c == '+' || c == '-') return 1;
     if (c == '(' || c == ')') return 0;
     return -1;
 }
+
 int calcExpr(char exprStr[]){
     for (int i = 0; i < strlen(exprStr); i++){
         if (exprStr[i] >= '0' && exprStr[i] <= '9'){
@@ -959,6 +1002,7 @@ int calcExpr(char exprStr[]){
         expr.push_back(node(char(opList.back())));
         opList.pop_back();
     }
+
     for (int i = 0; i < expr.size(); i++){
         if (expr[i].type){
         }
@@ -985,19 +1029,39 @@ int calcExpr(char exprStr[]){
 
     return expr[0].data.num;
 }
+
+//*
 int main() {
-    // freopen("AT678_input.txt","r",stdin);
     Image image = readImg();
     rmvNoise(image);
     rmvNoise(image);
+//    printImg(image);
     vector<Image> charList = splitExpr(image);
-    char exprStr[charList.size()];
-    memset(&exprStr, ' ', charList.size());
+//    string exprStr;
+    char exprStr[EXPR_LEN];
+    memset(&exprStr, 0, EXPR_LEN);
+
     readFontImg();
     generateFontImg();
+
     for (int imageCnt = 0; imageCnt < charList.size(); imageCnt++) {
+//        printf("char%d:\n", imageCnt);
+//        printImg(charList[imageCnt]);
+//        printf("\n\n\n");
         exprStr[imageCnt] = recogniseChar(charList[imageCnt]);
+//        exprStr += recogniseChar(charList[imageCnt]);
+//        printf("%s\n", exprStr);
+//        cout << exprStr << endl;
+//        cout << charList.size() << " " << imageCnt << endl;
     }
-    printf("%d", calcExpr(exprStr));
+
+//    printf("%d %d\n", charList.size(), sizeof(exprStr)/sizeof(char));
+//    printf("Expr: %s\n", exprStr);
+//    cout << exprStr << endl;
+//    char charArr[exprStr.length()];
+//    strcpy(charArr,exprStr.c_str());
+//    printf("%d", calcExpr(charArr));
+    printf("%d\n", calcExpr(exprStr));
     return 0;
 }
+/**/

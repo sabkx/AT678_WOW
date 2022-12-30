@@ -776,7 +776,6 @@ namespace sub1{
         }
     }
     inline void medium_reduce_noise(Image &input){
-        //reduce noise
         Image temp=Image();
         copy(temp,input);
         int x=input.vec.size();
@@ -795,8 +794,6 @@ namespace sub1{
                 arr[8]=input.vec[i+1][j+1];
                 sort(arr,arr+8);
                 temp.vec[i][j]=((double)arr[0]*0.153661872618337+arr[1]*0.202700255591144+arr[2]*0.0886373360771073+arr[3]*0.0725557944480514+arr[4]*0.0730594954560799+arr[5]*0.110144307001566+arr[6]*0.0858114972662411+arr[7]*0.148150899571762+arr[8]*0.156203242695401)>0.525;
-                // temp.vec[i][j]=((double)arr[4]*0.7+arr[3]*0.18+arr[5]*0.11+arr[2]*0.01)>0.86;
-                // temp.vec[i][j]=arr[4];
             }
         }
         for(int i=1;i<x-1;i++){
@@ -808,7 +805,6 @@ namespace sub1{
             temp.vec[x-1][j]=(temp.vec[x-1][j]+temp.vec[x-1][j+1]+temp.vec[x-1][j-1]+temp.vec[x-2][j])/4;
         }
         copy(input,temp);
-        // return temp;
     }
     bool vis[MAXN2][9005];
     int maxx[MAXN2];
@@ -862,11 +858,6 @@ namespace sub1{
     }
     inline vector<Image> split(Image input){
         cnt2=0;
-        // for(int i=0;i<=input.vec.size()+1;i++){
-        //     for(int j=0;j<=input.vec[0].size()+1;j++){
-        //         vis[i][j]=0;
-        //     }
-        // }
         memset(vis,0,sizeof(vis));
         vector<Image> res;
         for(int i=0;i<MAXN2;i++){
@@ -874,26 +865,19 @@ namespace sub1{
             maxx[i]=maxy[i]=0;
         }
         dfs(input);
-        // printf("cnt2: %d\n",cnt2);
         for(int i=1;i<=cnt2;i++){
             if(maxx[i]-minx[i]<=minsize&&maxy[i]-miny[i]<=minsize){
-                // printf("%d\n",i);
                 continue;
             }
             Image temp2(maxx[i]-minx[i]+1,maxy[i]-miny[i]+1);
             temp2.x=miny[i];
-            // res.push_back(Image(maxx[i]-minx[i]+1,maxy[i]-miny[i]+1));
             for(int x=minx[i];x<=maxx[i];x++){
                 for(int y=miny[i];y<=maxy[i];y++){
-                    // printf("%d\n",temp.vec[x-minx[i]][y-miny[i]]);
                     temp2.vec[x-minx[i]][y-miny[i]]=input.vec[x][y];
                 }
             }
             res.emplace_back(temp2);
-            // printf("%d %d %d %d\n",maxx[i],minx[i],maxy[i],miny[i]);
         }
-        // res.push_back(input);
-        // assert(res.size()!=0);
         return res;
     }
     inline Image stretching(Image input,int newx,int newy){
@@ -904,26 +888,17 @@ namespace sub1{
             }
         }
         return res;
-        // vector<Image> aa;
-        // aa=split(res);
-        // return aa[0];
-        // return split(res)[0];
     }
     inline Image distort(Image input,double sx,double sy){
         Image res(input.vec.size()*3,input.vec[0].size()*3);
         for(int i=0;i<input.h;i++){
             for(int j=0;j<input.w;j++){
-                // if(input.vec[i][j]){
-                //     aaaa++;
-                // }
                 res.vec[(int)(i+sy*j)+input.h][(int)(j+sx*i)+input.w]=input.vec[i][j];
             }
         }
-        // return res;
         vector<Image> aa;
         aa=split(res);
         return aa[0];
-        // return split(res)[0];
     }
     inline Image rotate(Image input,double angle){
         if(abs(angle)<=eps){
@@ -947,11 +922,9 @@ namespace sub1{
                 }
             }
         }
-        // res.print();
         vector<Image> aa;
         aa=split(res);
         return aa[0];
-        // return split(res)[0];
     }
     inline double compare(Image x,Image y){
         if(x.h<0.65*y.h||x.h*0.65>y.h||x.w<0.65*y.w||x.w*0.65>y.w){
@@ -961,8 +934,6 @@ namespace sub1{
         int cntsame=0;
         for(int i=0;i<y.vec.size();i++){
             for(int j=0;j<y.vec[0].size();j++){
-                // printf("%d %d\n",i,j);
-                // cntsame+=(newx.vec[i][j]=='#');
                 cntsame+=(newx.vec[i][j]==y.vec[i][j]);
             }
         }
@@ -1020,7 +991,6 @@ namespace sub1{
             }
             res=max(res,compare(realfont[x][i],img));
         }
-        // printf("%d %lf\n",x,res);
         return res;
     }
     inline void process(Image im){
@@ -1048,50 +1018,29 @@ namespace sub1{
         string str;
         char ch;
         prework();
-        // realfont[8][0].print();
         for(int i=1;i<=b;i++){
             str="";
             for(int j=1;j<=w;j++){
                 read(ch);
                 str+=ch;
-                // printf("%d %c\n",j,ch);
             }
             scanf("\n");
             vec.push_back(str);
-            // putchar('\n');
         }
-        // printf("%d\n",1);
         Image im;
         im.build(vec);
-        // im.print();
         medium_reduce_noise(im);
         medium_reduce_noise(im);
-        // medium_reduce_noise(im);
-        // medium_reduce_noise(im);
-        // im.print();
         vector<Image> splitted=split(im);
         int len=splitted.size();
         for(int i=1;i<=len;i++){
             in[i].x=splitted[i-1].x;
             in[i].id=i-1;
         }
-        // printf("1\n");
         sort(in+1,in+len+1,cmp);
-        // process(splitted[0]);
         for(int i=1;i<=len;i++){
-            // printf("%d\n",in[i].id);
-            // printf("y coor: %d\n",splitted[in[i].id].x);
-            // splitted[in[i].id].print();
             process(splitted[in[i].id]);
         }
-        // printf("2\n");
-        // for(char i:expr){
-        //     putchar(i);
-        //     putchar(' ');
-        // }
-        // putchar('\n');
-        // printf("%d\n",splitted.size());
-        // splitted[0].print();
     }
     stack<int> data, op;
     stack<int> num,data2;
@@ -1173,15 +1122,8 @@ namespace sub1{
         return values.top();
     }
     int solve1(){
-        // freopen("AT678_input.txt","r",stdin);
-        // freopen("AT678_output.txt","w",stdout);
-        // printf("%d \n%d %d\n",t,w,b);
-        // printf("b4 work function");
         work();
         printf("%d\n",evaluate(expr));
-        // printf("%d\n",clock()-start);
-        // printf("%d\n",CLOCKS_PER_SEC);
-        // printf("after work function\n");
         return 0;
     }
 };
@@ -1225,15 +1167,11 @@ namespace sub2{
             }
         }
     };
-     
     void initBound(int &xMin, int &xMax, int &yMin, int &yMax, Image image);
     Image connectedPixels(int x, int y, Image &image);
     Image fontImage[16];
     vector<vector<Image>> randomisedFontImage = vector<vector<Image>>(16);
-     
     Image readImg(){
-        // scanf("%d", &t);
-        // scanf("%d %d", &w, &h);
         Image image(h, w);
         for (int row = 0; row < h; row++){
             char str[MAX_WIDTH];
@@ -1246,7 +1184,6 @@ namespace sub2{
      
         return image;
     }
-     
     void printImg(Image image){
         for (int row = 0; row < image.h; row++){
             for (int col = 0; col < image.w; col++){
@@ -1255,7 +1192,6 @@ namespace sub2{
             printf("\n");
         }
     }
-     
     void rmvNoise(Image &image){
         Image tmpImage(image);
         int dx[] = {-1, 0, 1, -1, 0, 1, -1, 0, 1},
@@ -1276,7 +1212,6 @@ namespace sub2{
             }
         }
     }
-     
     Image stretchImg(Image image, int tarX, int tarY){
         Image tmp(tarX, tarY);
         for (int row = 0; row < tarX; row++){
@@ -1286,13 +1221,11 @@ namespace sub2{
         }
         return tmp;
     }
-     
     Image rotateImg(Image image, double ang){
         vector<pair<int, int>> pointList;
         int xMin = INF, xMax = -INF, yMin = INF, yMax = -INF;
         ang = ang * pi / 180;
         double sinAng = sin(ang), cosAng = cos(ang), xCen = image.h/2., yCen = image.w/2.;
-     
         for (int row = 0; row < image.h; row++) {
             for (int col = 0; col < image.w; col++){
                 if (image.pixels[row][col]) {
@@ -1306,18 +1239,15 @@ namespace sub2{
                 }
             }
         }
-     
         Image tmp(xMax-xMin+1, yMax-yMin+1);
         for (pair<int, int> point: pointList){
             tmp.pixels[point.first - xMin][point.second - yMin] = 1;
         }
         return tmp;
     }
-     
     Image cutImg(Image image, double cx, double cy){
         vector<pair<int, int>> pointList;
         int xMin = INF, xMax = -INF, yMin = INF, yMax = -INF;
-     
         for (int row = 0; row < image.h; row++) {
             for (int col = 0; col < image.w; col++) {
                 if (image.pixels[row][col]) {
@@ -1331,20 +1261,17 @@ namespace sub2{
                 }
             }
         }
-     
         Image tmp(xMax-xMin+1, yMax-yMin+1);
         for (pair<int, int> point: pointList){
             tmp.pixels[point.first - xMin][point.second - yMin] = 1;
         }
         return tmp;
     }
-     
     double matchImg(Image image1, Image image2){
         if (min(abs((double)image1.h/image1.w - image2.h/image2.w), abs((double)image1.w/image1.h - image2.w/image2.h)) > 0.4){
             return 0;
         }
         int reCnt = 0, xMin = min(image1.h, image2.h), yMin = min(image1.w, image2.w);
-    //    int reCnt = 0, xMin = max(image1.h, image2.h), yMin = max(image1.w, image2.w);
         image1 = stretchImg(image1, xMin, yMin);
         image2 = stretchImg(image2, xMin, yMin);
         for (int row = 0; row < xMin; row++){
@@ -1376,20 +1303,14 @@ namespace sub2{
                     break;
                 }
             }
-    //        printImg(image);
-    //        printf("\n\n");
             fontImage[charCnt] = image;
         }
     }
-     
     void generateFontImg(){
         for (int charCnt = 0; charCnt < 16; charCnt++){
             vector<Image> c;
             for (int r = -15; r < 16; r+=3){
                 Image tmp = rotateImg(fontImage[charCnt], r);
-     
-    //            printImg(tmp);
-    //            printf("\n\n");
                 double num = 0.1;
                 c.push_back(cutImg(tmp, -num, -num));
                 c.push_back(cutImg(tmp, -num, num));
@@ -1399,13 +1320,10 @@ namespace sub2{
             }
             for (int i = 0; i < c.size(); i++){
                 rmvNoise(c[i]);
-    //            printImg(randomisedFontImage[charCnt][i]);
-    //            printf("\n\n");
             }
             randomisedFontImage[charCnt] = c;
         }
     }
-     
     char recogniseChar(Image charImage){
         int charNo = 0;
         double max = 0;
@@ -1419,14 +1337,12 @@ namespace sub2{
         }
         return charRepresentation[charNo];
     }
-     
     void initBound(int &xMin, int &xMax, int &yMin, int &yMax, Image image){
         xMin = image.h;
         xMax = 0;
         yMin = image.w;
         yMax = 0;
     }
-     
     Image connectedPixels(int x, int y, Image &image){
         queue<pair<int, int>> unchecked;
         int dx[] = {-1, 0, 0, 1},
@@ -1451,12 +1367,10 @@ namespace sub2{
                 }
             }
         }
-     
         Image charImage(xMax - xMin + 1, yMax - yMin + 1);
         if ((xMax - xMin + 1) * (yMax - yMin + 1) < 100){
             return Image(0, 0);
         }
-     
         for (int row = 0; row < (xMax - xMin + 1); row++){
             for (int col = 0; col < (yMax - yMin + 1); col++){
                 charImage.pixels[row][col] = vis[row + xMin][col + yMin];
@@ -1465,7 +1379,6 @@ namespace sub2{
         }
         return charImage;
     }
-     
     vector<Image> splitExpr(Image &image){
         vector<Image> charList;
         for (int col = 0; col < image.w; col++){
@@ -1478,10 +1391,8 @@ namespace sub2{
                 }
             }
         }
-     
         return charList;
     }
-     
     struct node{
         int type;
         union {
@@ -1497,18 +1408,15 @@ namespace sub2{
             data.op = op;
         }
     };
-     
     vector<node> expr;
     vector<char> opList;
-     
-    int priority(char c) {
+    inline int priority(char c) {
         if (c == '^') return 3;
         if (c == '*' || c == '/') return 2;
         if (c == '+' || c == '-') return 1;
         if (c == '(' || c == ')') return 0;
         return -1;
     }
-     
     int calcExpr(char exprStr[]){
         for (int i = 0; i < strlen(exprStr); i++){
             if (exprStr[i] >= '0' && exprStr[i] <= '9'){
@@ -1568,44 +1476,22 @@ namespace sub2{
      
         return expr[0].data.num;
     }
-     
-    //*
     int solve2() {
         Image image = readImg();
         rmvNoise(image);
         rmvNoise(image);
-    //    printImg(image);
         vector<Image> charList = splitExpr(image);
-    //    string exprStr;
         char exprStr[EXPR_LEN];
         memset(&exprStr, 0, EXPR_LEN);
-     
         readFontImg();
         generateFontImg();
-     
         for (int imageCnt = 0; imageCnt < charList.size(); imageCnt++) {
-    //        printf("char%d:\n", imageCnt);
-    //        printImg(charList[imageCnt]);
-    //        printf("\n\n\n");
             exprStr[imageCnt] = recogniseChar(charList[imageCnt]);
-    //        exprStr += recogniseChar(charList[imageCnt]);
-    //        printf("%s\n", exprStr);
-    //        cout << exprStr << endl;
-    //        cout << charList.size() << " " << imageCnt << endl;
         }
-     
-    //    printf("%d %d\n", charList.size(), sizeof(exprStr)/sizeof(char));
-    //    printf("Expr: %s\n", exprStr);
-    //    cout << exprStr << endl;
-    //    char charArr[exprStr.length()];
-    //    strcpy(charArr,exprStr.c_str());
-    //    printf("%d", calcExpr(charArr));
         printf("%d\n", calcExpr(exprStr));
         return 0;
     }
-    /**/
 };
-// using namespace sub1;
 int main(void){
     int t,w,b;
     scanf("%d%d%d\n",&t,&w,&b);

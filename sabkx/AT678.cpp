@@ -779,7 +779,6 @@ inline void dfs2(int x,int y,Image im){
     if(im.vec[x][y]==0){
         return;
     }
-    // printf("%d %d %d\n",x,y,cnt2);
     maxx[cnt2]=max(maxx[cnt2],x);
     minx[cnt2]=min(minx[cnt2],x);
     maxy[cnt2]=max(maxy[cnt2],y);
@@ -795,7 +794,6 @@ inline void dfs2(int x,int y,Image im){
             continue;
         }
         if(!vis[newx][newy]&&im.vec[newx][newy]==1){
-            // vis[newx][newy]=true;
             dfs2(newx,newy,im);
         }
     }
@@ -1017,6 +1015,7 @@ void work(){
         in[i].x=splitted[i-1].x;
         in[i].id=i-1;
     }
+    // splitted[0].print();
     // printf("1\n");
     sort(in+1,in+len+1,cmp);
     // process(splitted[0]);

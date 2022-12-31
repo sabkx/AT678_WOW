@@ -723,7 +723,6 @@ inline void rmvNoise(Image &image){
         dy[] = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
     for (int row = 0; row < image.h; row++){
         for (int col = 0; col < image.w; col++){
-
             int cnt = 0, totalCnt = 0;
             for (int i = 0; i < 9; i++){
                 int nx = row + dx[i], ny = col + dy[i];
@@ -733,7 +732,6 @@ inline void rmvNoise(Image &image){
                 }
             }
             image.pixels[row][col] = (2*cnt > totalCnt);
-
         }
     }
 }
@@ -912,12 +910,10 @@ Image connectedPixels(int x, int y, Image &image){
             }
         }
     }
-
     Image charImage(xMax - xMin + 1, yMax - yMin + 1);
     if ((xMax - xMin + 1) * (yMax - yMin + 1) < 100){
         return Image(0, 0);
     }
-
     for (int row = 0; row < (xMax - xMin + 1); row++){
         for (int col = 0; col < (yMax - yMin + 1); col++){
             charImage.pixels[row][col] = vis[row + xMin][col + yMin];
@@ -1032,10 +1028,12 @@ int calcExpr(char exprStr[]){
 
 //*
 int main() {
+    freopen("AT678_input.txt","r",stdin);
+    freopen("AT678_YQ_output.txt","w",stdout);
     Image image = readImg();
     rmvNoise(image);
     rmvNoise(image);
-//    printImg(image);
+   printImg(image);
     vector<Image> charList = splitExpr(image);
 //    string exprStr;
     char exprStr[EXPR_LEN];

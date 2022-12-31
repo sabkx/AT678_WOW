@@ -902,14 +902,12 @@ inline Image rotate(Image input,double angle){
 }
 inline double compare(Image x,Image y){
     if(x.h<0.65*y.h||x.h*0.65>y.h||x.w<0.65*y.w||x.w*0.65>y.w){
-        return 0;
+        return 0; //if size too different then cannot match
     }
     Image newx=stretching(x,y.vec.size(),y.vec[0].size());
     int cntsame=0;
     for(int i=0;i<y.vec.size();i++){
         for(int j=0;j<y.vec[0].size();j++){
-            // printf("%d %d\n",i,j);
-            // cntsame+=(newx.vec[i][j]=='#');
             cntsame+=(newx.vec[i][j]==y.vec[i][j]);
         }
     }
@@ -1015,7 +1013,7 @@ void work(){
         in[i].x=splitted[i-1].x;
         in[i].id=i-1;
     }
-    // splitted[0].print();
+    // splitted[3].print();
     // printf("1\n");
     sort(in+1,in+len+1,cmp);
     // process(splitted[0]);
